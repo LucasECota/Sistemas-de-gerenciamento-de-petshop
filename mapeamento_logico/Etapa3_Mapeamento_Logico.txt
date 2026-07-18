@@ -1,0 +1,89 @@
+===================================================================
+ Projeto Pratico - CSI440/CSI602 - Sistema para Gerenciamento de Petshop
+ Etapa 3 - Mapeamento Conceitual -> Logico
+ Lucas Emanuel Cota Carneiro - matricula 24.1.8980
+===================================================================
+
+Convencao:
+  _atributo_   -> chave primaria (PK)
+  atributo(FK) -> chave estrangeira (FK), com a tabela referenciada
+                  indicada logo abaixo de cada tabela
+
+
+TUTOR
+-------------------------------------------------------------------
+| _id_tutor_ | nome | cpf | telefone | email | endereco |
+-------------------------------------------------------------------
+
+
+PET
+-----------------------------------------------------------------------------
+| _id_pet_ | id_tutor(FK) | nome | especie | raca | data_nascimento | peso |
+-----------------------------------------------------------------------------
+id_tutor(FK) -> TUTOR
+
+
+FUNCIONARIO
+-------------------------------------------------------------------
+| _id_funcionario_ | nome | cpf | cargo | data_contratacao |
+-------------------------------------------------------------------
+
+
+SERVICO
+-------------------------------------------------------------------
+| _id_servico_ | nome | descricao | preco |
+-------------------------------------------------------------------
+
+
+AGENDAMENTO
+----------------------------------------------------------------------------
+| _id_agendamento_ | id_pet(FK) | id_funcionario(FK) | data_hora | status |
+----------------------------------------------------------------------------
+id_pet(FK)         -> PET
+id_funcionario(FK) -> FUNCIONARIO
+
+
+AGENDAMENTO_SERVICO   (tabela associativa - resolve N:N entre Agendamento e Servico)
+-------------------------------------------------------------------
+| _id_agendamento(FK)_ | _id_servico(FK)_ |
+-------------------------------------------------------------------
+id_agendamento(FK) -> AGENDAMENTO
+id_servico(FK)      -> SERVICO
+* chave primaria composta pelas duas FKs
+
+
+PRODUTO
+-------------------------------------------------------------------
+| _id_produto_ | nome | preco | estoque |
+-------------------------------------------------------------------
+
+
+VENDA
+-------------------------------------------------------------------
+| _id_venda_ | id_tutor(FK) | data | valor_total |
+-------------------------------------------------------------------
+id_tutor(FK) -> TUTOR
+
+
+VENDA_ITEM   (tabela associativa - resolve N:N entre Venda e Produto)
+-------------------------------------------------------------------
+| _id_venda(FK)_ | _id_produto(FK)_ | quantidade | preco_unitario |
+-------------------------------------------------------------------
+id_venda(FK)   -> VENDA
+id_produto(FK) -> PRODUTO
+* chave primaria composta pelas duas FKs
+* preco_unitario grava o preco no momento da venda (o preco em
+  PRODUTO pode mudar depois, sem afetar o historico de vendas)
+
+
+===================================================================
+ Resumo das chaves estrangeiras (integridade referencial)
+===================================================================
+PET.id_tutor                       -> TUTOR.id_tutor
+AGENDAMENTO.id_pet                 -> PET.id_pet
+AGENDAMENTO.id_funcionario         -> FUNCIONARIO.id_funcionario
+AGENDAMENTO_SERVICO.id_agendamento -> AGENDAMENTO.id_agendamento
+AGENDAMENTO_SERVICO.id_servico     -> SERVICO.id_servico
+VENDA.id_tutor                     -> TUTOR.id_tutor
+VENDA_ITEM.id_venda                -> VENDA.id_venda
+VENDA_ITEM.id_produto              -> PRODUTO.id_produto
