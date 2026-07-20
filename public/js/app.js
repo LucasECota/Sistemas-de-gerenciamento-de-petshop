@@ -16,7 +16,7 @@ const RESOURCES = {
   pets: {
     label: 'Pets', endpoint: '/api/pets', idField: 'id_pet',
     columns: [
-      ['nome', 'Nome', 'text'], ['especie', 'Espécie', 'text'], ['raca', 'Raça', 'text'],
+      ['nome', 'Nome', 'text'], ['especie', 'Espécie', 'text', false], ['raca', 'Raça', 'text', false],
       ['peso', 'Peso (kg)', 'number'], ['nome_tutor', 'Tutor', 'text'],
     ],
     fields: [
@@ -43,7 +43,7 @@ const RESOURCES = {
   },
   servicos: {
     label: 'Serviços', endpoint: '/api/servicos', idField: 'id_servico',
-    columns: [['nome', 'Nome', 'text'], ['descricao', 'Descrição', 'text'], ['preco', 'Preço', 'number']],
+    columns: [['nome', 'Nome', 'text'], ['descricao', 'Descrição', 'text', false], ['preco', 'Preço', 'number']],
     fields: [
       { name: 'nome', label: 'Nome', type: 'text', required: true },
       { name: 'descricao', label: 'Descrição', type: 'text' },
@@ -165,6 +165,7 @@ function createTable({ data, columns, idField, endpoint, reloadKey, statusField,
     }
 
     table.innerHTML = `<thead><tr>${columns.map(col => {
+      if (col.sortable === false) return `<th>${col.label}</th>`;
       const arrow = sortKey === col.key ? (sortDir === 1 ? ' \u25B2' : ' \u25BC') : '';
       return `<th data-key="${col.key}">${col.label}${arrow}</th>`;
     }).join('')}<th></th></tr></thead>
@@ -280,6 +281,7 @@ function renderGenericTable(cfg, data) {
     const type = c[2] || 'text';
     return {
       key: c[0], label: c[1], type,
+      sortable: c[3] !== false,
       render: type === 'date'
         ? (row => row[c[0]] ? new Date(row[c[0]]).toLocaleDateString('pt-BR') : '')
         : undefined
